@@ -8,8 +8,7 @@ import type {
   Photo,
   Todo,
 } from "../lib/types";
-
-const URL = "http://localhost:3000/";
+import { URL } from "@/lib/constants";
 
 export const request = async <T = unknown, D = unknown>(
   endPoint: string = "",
