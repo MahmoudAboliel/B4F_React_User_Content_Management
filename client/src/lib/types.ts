@@ -61,3 +61,12 @@ export interface Todo {
   title: string;
   completed: boolean;
 }
+
+// API Related Types
+export interface ApiResponse<T> {
+  status: number;
+  data: T;
+  message: string;
+}
+
+export type Method = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
