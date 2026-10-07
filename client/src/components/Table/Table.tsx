@@ -1,4 +1,4 @@
-import type {ReactNode} from "react";
+import type { ReactNode } from "react";
 
 interface TableProps {
   children: ReactNode;
@@ -11,7 +11,7 @@ const Table = ({ children, className = "", id }: TableProps) => {
     <div className="overflow-x-auto w-full">
       <table
         id={id}
-        className={`w-full text-left text-sm border-collapse  min-w-[800px] ${className}`}
+        className={`w-full text-left text-sm border-collapse  min-w-200 ${className}`}
       >
         {children}
       </table>
