@@ -68,16 +68,17 @@ const createCrudService = <
 export const usersApi = createCrudService<User>("users");
 export const postsApi = createCrudService<Post>("posts");
 export const commentsApi = createCrudService<Comment>("comments");
-export const albums = createCrudService<Album>("albums");
-export const photos = createCrudService<Photo>("photos");
-export const todos = createCrudService<Todo>("todos");
+export const albumsApi = createCrudService<Album>("albums");
+export const photosApi = createCrudService<Photo>("photos");
+export const todosApi = createCrudService<Todo>("todos");
 
 // TODO query parameters
-// const xx = await usersApi.getAll();
 // const x = async () => {
 //   const res = await fetch("http://localhost:3000/users?id=2");
 //   const rr = await res.json();
 //   console.log(rr);
 // };
+
 // For Types
+// const xx = await usersApi.getAll();
 // console.log(xx?.data[0]);
