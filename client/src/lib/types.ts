@@ -70,3 +70,9 @@ export interface ApiResponse<T> {
 }
 
 export type Method = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+
+// Columns Extraction
+export interface ColumnConfig<T> {
+  header: string;
+  key: keyof T;
+}
