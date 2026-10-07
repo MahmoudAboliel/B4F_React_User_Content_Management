@@ -62,7 +62,7 @@ const createCrudService = <
     request<TEntity, TCreate>(endPoint, "POST", data),
   update: (id: number, data: TUpdate | null) =>
     request<TEntity, TUpdate>(`${endPoint}/${id}`, "PATCH", data),
-  delete: (id: number) => request<null>(`${endPoint}/${id}`, "DELETE"),
+  delete: (id: number, query: string = "") => request<null>(`${endPoint}/${id}${query}`, "DELETE"),
 });
 
 export const usersApi = createCrudService<User>("users");

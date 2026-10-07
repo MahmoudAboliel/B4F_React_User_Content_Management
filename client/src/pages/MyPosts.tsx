@@ -7,15 +7,18 @@ import TableRow from "@/components/Table/TableRow/TableRow";
 import { useUser } from "@/context/UserContext";
 import { pageMeta } from "@/lib/constants";
 import type { ColumnConfig, Post } from "@/lib/types";
-import { extractHeaders } from "@/lib/utils";
+import { deletePostWithComments, extractHeaders } from "@/lib/utils";
 import { postsApi } from "@/services/api";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { DynamicForm } from "@/lib/dynamic-form/DynamicForm";
 
 const MyPosts = () => {
   const { user } = useUser();
   const [posts, setPosts] = useState<Post[]>([]);
+  const [update, setUpdate] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -26,7 +29,7 @@ const MyPosts = () => {
     };
 
     fetchPosts();
-  }, [user]);
+  }, [user, update]);
   // console.log(posts);
 
   const postColumns: ColumnConfig<Post>[] = [
@@ -53,17 +56,54 @@ const MyPosts = () => {
                 <Button size="xs" variant="outline">
                   <Link to={`/posts/${post.id}`}>View</Link>
                 </Button>
-                <Button
-                  size="xs"
-                  variant="secondary"
-                  onClick={() => handleUpdate(post.id)}
-                >
-                  Update
-                </Button>
+                <Dialog>
+                  <DialogTrigger
+                    render={
+                      <Button
+                        size="xs"
+                        variant="secondary"
+                        onClick={() => {}}
+                      />
+                    }
+                  >
+                    Update
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Update Post</DialogTitle>
+                      <DialogDescription>Edit your post</DialogDescription>
+                    </DialogHeader>
+                    <DynamicForm
+                      fields={[
+                        {
+                          name: "title",
+                          label: "Post Title",
+                          type: "text",
+                          required: false,
+                        },
+                        {
+                          name: "body",
+                          label: "Post Body",
+                          type: "text",
+                          required: false,
+                        },
+                      ]}
+                      onSubmit={async (data: Record<string, unknown>) => {
+                        await postsApi.update(post.id, data);
+                        setUpdate(prev => !prev);
+                      }}
+                      submitLabel="edit"
+                      columns={1}
+                    />
+                  </DialogContent>
+                </Dialog>
                 <Button
                   size="xs"
                   variant="destructive"
-                  onClick={() => handleDelete(post.id)}
+                  onClick={async () => {
+                    await deletePostWithComments(post.id);
+                    setUpdate((prev) => !prev);
+                  }}
                 >
                   Delete
                 </Button>

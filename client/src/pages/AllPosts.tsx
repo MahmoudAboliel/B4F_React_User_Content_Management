@@ -50,7 +50,7 @@ const AllPosts = () => {
                 <Button size="xs" variant="outline">
                   <Link to={`/posts/${post.id}`}>View</Link>
                 </Button>
-                <Button
+                {/* <Button
                   size="xs"
                   variant="secondary"
                   onClick={() => handleUpdate(post.id)}
@@ -63,7 +63,7 @@ const AllPosts = () => {
                   onClick={() => handleDelete(post.id)}
                 >
                   Delete
-                </Button>
+                </Button> */}
               </TableCell>
             </TableRow>
           ))}

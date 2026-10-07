@@ -14,7 +14,7 @@ import { buildSchema } from "./schema-builder";
 import { FormField } from "./FormField";
 import { Button } from "@/components/ui/button";
 import {
-  FieldGroup,
+  // FieldGroup,
   FieldSet,
   FieldLegend,
   FieldSeparator,
@@ -81,7 +81,7 @@ export function DynamicForm({
     }
   };
 
-  const handleInvalid: SubmitErrorHandler<any> = (errors) => {
+  const handleInvalid: SubmitErrorHandler<any> = (errors: { [s: string]: unknown; } | ArrayLike<unknown>) => {
     if (onError) {
       const formatted = Object.entries(errors).reduce(
         (acc, [key, value]) => {
