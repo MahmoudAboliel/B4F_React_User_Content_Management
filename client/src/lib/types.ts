@@ -16,7 +16,7 @@ type Address = {
 };
 
 export interface User {
-  id: number;
+  id: string;
   name: string;
   username: string;
   email: string;
@@ -27,37 +27,37 @@ export interface User {
 }
 
 export interface Post {
-  userId: number;
-  id: number;
+  userId: string;
+  id: string;
   title: string;
   body: string;
 }
 
 export interface Comment {
-  postId: number;
-  id: number;
+  postId: string;
+  id: string;
   name: string;
   email: string;
   body: string;
 }
 
 export interface Album {
-  userId: number;
-  id: number;
+  userId: string;
+  id: string;
   title: string;
 }
 
 export interface Photo {
-  albumId: number;
-  id: number;
+  albumId: string;
+  id: string;
   title: string;
   url: string;
   thumbnailUrl: string;
 }
 
 export interface Todo {
-  userId: number;
-  id: number;
+  userId: string;
+  id: string;
   title: string;
   completed: boolean;
 }

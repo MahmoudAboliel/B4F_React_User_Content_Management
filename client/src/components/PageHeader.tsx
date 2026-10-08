@@ -1,15 +1,17 @@
 import { useUser } from "@/context/UserContext";
+import type { ReactNode } from "react";
 
 interface PageHeaderProps {
   title: string;
   description?: string;
+  AddButton: ReactNode;
 }
 
-const PageHeader = ({ title, description }: PageHeaderProps) => {
+const PageHeader = ({ title, description, AddButton }: PageHeaderProps) => {
   const { user } = useUser();
 
   return (
-    <header className="mb-4 border-b pb-4">
+    <header className="mb-4 border-b pb-4 flex justify-between items-end">
       <div className="flex flex-col gap-1">
         {user && (
           <span className="text-sm font-medium text-primary">
@@ -27,6 +29,7 @@ const PageHeader = ({ title, description }: PageHeaderProps) => {
           </p>
         )}
       </div>
+      {AddButton}
     </header>
   );
 };

@@ -74,6 +74,8 @@ export function DynamicForm({
     try {
       setIsSubmitting(true);
       await onSubmit(data);
+      
+      form.reset(defaultValues as never);
     } catch (error) {
       console.error("Form submission error:", error);
     } finally {
@@ -107,7 +109,7 @@ export function DynamicForm({
   );
 
   const renderFields = (fieldsToRender: FieldConfig[]) => (
-    <div className={cn("grid gap-4", columnClasses[columns])}>
+    <div className={cn("grid gap-3", columnClasses[columns])}>
       {fieldsToRender.map(renderField)}
     </div>
   );
@@ -116,10 +118,10 @@ export function DynamicForm({
     <FormProvider {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit, handleInvalid)}
-        className={cn("space-y-6", className)}
+        className={cn("space-y-3", className)}
       >
         {sections ? (
-          <div className="space-y-8">
+          <div className="space-y-4">
             {sections.map((section, index) => (
               <FieldSet key={index}>
                 {section.title && (
@@ -139,7 +141,7 @@ export function DynamicForm({
           renderFields(allFields)
         )}
 
-        <div className="flex items-center gap-3 pt-4">
+        <div className="flex items-center gap-3">
           <Button type="submit" disabled={isSubmitting || loading}>
             {(isSubmitting || loading) && (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -148,7 +150,7 @@ export function DynamicForm({
           </Button>
           {onCancel && (
             <Button
-              type="button"
+              type="reset"
               variant="outline"
               onClick={onCancel}
               disabled={isSubmitting}

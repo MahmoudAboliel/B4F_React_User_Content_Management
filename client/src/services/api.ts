@@ -1,3 +1,4 @@
+import type { Dispatch, SetStateAction } from "react";
 import type {
   Method,
   ApiResponse,
@@ -7,8 +8,33 @@ import type {
   Album,
   Photo,
   Todo,
-} from "../lib/types";
+} from "@/lib/types";
 import { URL } from "@/lib/constants";
+
+const normalizeIdValues = <T>(value: T): T => {
+  if (Array.isArray(value)) {
+    return value.map((item) => normalizeIdValues(item)) as T;
+  }
+
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>).map(([key, item]) => {
+        const shouldNormalizeId =
+          key === "id" ||
+          key.toLowerCase() === "userid" ||
+          key.toLowerCase().endsWith("id");
+
+        if (shouldNormalizeId && item !== null && item !== undefined) {
+          return [key, String(item)];
+        }
+
+        return [key, normalizeIdValues(item)];
+      }),
+    ) as T;
+  }
+
+  return value;
+};
 
 export const request = async <T = unknown, D = unknown>(
   endPoint: string = "",
@@ -37,7 +63,7 @@ export const request = async <T = unknown, D = unknown>(
       );
     }
 
-    const result = (await res.json()) as T;
+    const result = normalizeIdValues((await res.json()) as T);
     return { status: res.status, data: result, message: "done successfully" };
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -49,20 +75,21 @@ export const request = async <T = unknown, D = unknown>(
 };
 
 const createCrudService = <
-  TEntity extends { id: number },
+  TEntity extends { id: string },
   TCreate = Omit<TEntity, "id">,
   TUpdate = Partial<TCreate>,
 >(
   endPoint: string,
 ) => ({
   getAll: (query: string = "") => request<TEntity[]>(`${endPoint}${query}`),
-  getById: (id: number, query: string = "") =>
+  getById: (id: string, query: string = "") =>
     request<TEntity>(`${endPoint}/${id}${query}`),
   create: (data: TCreate | null) =>
     request<TEntity, TCreate>(endPoint, "POST", data),
-  update: (id: number, data: TUpdate | null) =>
+  update: (id: string, data: TUpdate | null) =>
     request<TEntity, TUpdate>(`${endPoint}/${id}`, "PATCH", data),
-  delete: (id: number, query: string = "") => request<null>(`${endPoint}/${id}${query}`, "DELETE"),
+  delete: (id: string, query: string = "") =>
+    request<null>(`${endPoint}/${id}${query}`, "DELETE"),
 });
 
 export const usersApi = createCrudService<User>("users");
@@ -82,3 +109,46 @@ export const todosApi = createCrudService<Todo>("todos");
 // For Types
 // const xx = await usersApi.getAll();
 // console.log(xx?.data[0]);
+
+export const deletePostWithComments = async (postId: string) => {
+  const comments = await commentsApi.getAll(`?postId=${postId}`);
+  const commentIds = comments?.data.map((c) => c.id) ?? [];
+
+  await Promise.all(
+    commentIds.map(async (id) => {
+      await commentsApi.delete(id);
+    }),
+  );
+
+  await postsApi.delete(postId);
+};
+
+export const deleteAlbumWithPhotos = async (albumId: string) => {
+  const photos = await photosApi.getAll(`?albumId=${albumId}`);
+  const commentIds = photos?.data.map((ph) => ph.id) ?? [];
+  await Promise.all(
+    commentIds.map(async (id) => {
+      await photosApi.delete(id);
+    }),
+  );
+
+  await albumsApi.delete(albumId);
+};
+
+export const sendComment = async (
+  user: User,
+  post: Post,
+  message: string,
+  setMessage: Dispatch<SetStateAction<string>>,
+  setUpdate: Dispatch<SetStateAction<boolean>>,
+) => {
+  const payload: Omit<Comment, "id"> = {
+    name: user.username,
+    body: message,
+    email: user.email,
+    postId: post.id,
+  };
+  await commentsApi.create(payload);
+  setUpdate((prev) => !prev);
+  setMessage("");
+};

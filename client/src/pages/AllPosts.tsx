@@ -19,7 +19,7 @@ const AllPosts = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       const response = await postsApi.getAll();
-      setPosts(response?.data || []);
+      setPosts(response?.data.reverse() || []);
     };
 
     fetchPosts();
@@ -35,15 +35,15 @@ const AllPosts = () => {
   const headers = [...extractHeaders(postColumns), "Actions"];
   return (
     <div>
-      <PageHeader {...pageMeta.allPosts} />
+      <PageHeader {...pageMeta.allPosts} AddButton={<></>} />
       <Table id="table">
         <TableHead cols={headers} />
         <TableBody id="table-body">
-          {posts.map((post) => (
+          {posts.map((post, index) => (
             <TableRow key={post.id}>
               {postColumns.map((col) => (
                 <TableCell key={col.key} id={String(col.key)}>
-                  {String(post[col.key])}
+                  {col.key === "id" ? index + 1 : String(post[col.key])}
                 </TableCell>
               ))}
               <TableCell id="actions" className="flex items-center gap-2">

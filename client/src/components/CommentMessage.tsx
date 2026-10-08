@@ -5,29 +5,30 @@ import {
   MessageAvatar,
   MessageContent,
 } from "@/components/ui/message";
-import type { Comment } from "@/lib/types";
+import type { Comment, User } from "@/lib/types";
 
 const CommentMessage = ({
   comments,
+  user,
 }: {
   comments: Comment[];
-  userEmail: string | undefined;
+  user: User | null;
 }) => {
   return (
-    <div className="flex w-full max-w-sm flex-col gap-6 py-12">
-      {comments.map((comment, idx) => {
+    <div className="flex w-full  flex-col justify-center gap-4 py-4">
+      {comments.map((comment) => {
         // In React, calling a state updater function during render causes an immediate re-render.
         // handleToggle();
         return (
-          <Message key={comment.id} align={idx % 2 === 0 ? "start" : "end"}>
+          <Message key={comment.id} align={comment.email === user?.email ? "end" : "start"}>
             <MessageAvatar>
               <Avatar>
-                <AvatarImage src="/avatars/10.png" alt="@me" />
-                <AvatarFallback>{comment.name}</AvatarFallback>
+                <AvatarImage src={`https://i.pravatar.cc/150?u=${comment.email ?? "guest"}`} alt={comment.name} />
+                <AvatarFallback>UC</AvatarFallback>
               </Avatar>
             </MessageAvatar>
             <MessageContent>
-              <Bubble>
+              <Bubble variant={comment.email === user?.email ? "muted" : "secondary"}>
                 <BubbleContent>{comment.body}</BubbleContent>
               </Bubble>
             </MessageContent>
